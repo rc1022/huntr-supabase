@@ -1,23 +1,17 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Title from '../components/Title'
-import AddJobButton from '../components/addJobButton'
-import JobsDisplayButton from '../components/JobsDisplayButton'
-import JobForm from '../components/JobForm';
-import useJobs from '../hooks/useJobs';
+import LoginButton from '../components/LoginButton';
+import SignupButton from '../components/SignupButton';
 
 
 
 function Home() {
 
-  const { applying } = useJobs();
-
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center bg-ivory">
       <Title />
-      <AddJobButton />
-      <JobsDisplayButton />
-
-      {applying && <JobForm /> }
+      <LoginButton />
+      <SignupButton />
       
     </div>
 

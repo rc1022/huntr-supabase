@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Home from "./pages/Home";
 import JobsPage from './pages/JobsPage';
 import LoginPage from './pages/LoginPage';
-import SignUpPage from './pages/SignUpPage';
+import SignupPage from './pages/SignupPage';
 
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
       <Route path="/" element = {<Home /> } />
       <Route path="/jobs" element = {<JobsPage /> } />
       <Route path="/login" element = {<LoginPage /> } />
-      <Route path="/signup" element = {<SignUpPage />} />
+      <Route path="/signup" element = {<SignupPage />} />
     </Routes>
   
     

@@ -91,8 +91,9 @@ function JobForm() {
                                     await addJob(formData);
                                     handleApplying();
                                     navigate('/jobs');
+                                    console.log(clicked);
                                 }}
-                                disabled={isValid}
+                                disabled={!isValid}
                             >
                                 ADD</button>
                     <button className='pl-2 pr-2 rounded-xl h-8 w-18 bg-main text-ivory text-sm cursor-pointer'

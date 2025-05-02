@@ -19,11 +19,11 @@ function JobsPage() {
       <Header />
 
       <div className='flex flex-col h-full justify-center items-center mt-2 mb-2 ml-10 mr-10 bg-ivory'>
-        <div className='flex flex-row flex-wrap m-1 justify-center overflow-y-auto '>
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-4 m-1 overflow-y-auto justify-items-center'>
           
           {isLoading ? <Spinner /> : 
             jobs.map( job => (
-              <div className='w-full sm:w-1/2 lg:w-1/4 m-4 bg-ivory'
+              <div className='w-full sm:1/2 lg:1/3 xl:1/4 m-4 bg-ivory'
                     key={job.id}>
                 <JobCard job={job} />
               </div>
