@@ -43,7 +43,7 @@ function JobForm() {
    
 
   return (
-    <div className='h-screen w-screen fixed bg-black/30 flex justify-center items-center transition-all duration-500 ease-in-out'>
+    <div className='z-50 h-screen w-screen fixed bg-black/30 flex justify-center items-center transition-all duration-500 ease-in-out'>
 
             <div className='bg-ivory h-4/5 w-1/2 flex flex-col border-4 border-main justify-center items-center animate-fadeZoom'>
                 <div ref={modalRef} className='w-full bg-main text-3xl p-4 text-ivory font-sgothic flex justify-center items-center'>

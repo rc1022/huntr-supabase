@@ -95,7 +95,7 @@ function SignupPage() {
                 already have an account?
             </label>
             <button 
-              onClick={() => navigate('/signup')}
+              onClick={() => navigate('/login')}
               className='underline text-main px-2 py-1 rounded-md right-1 btn-animate cursor-pointer'>
                 login here!
             </button>

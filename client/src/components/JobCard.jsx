@@ -25,10 +25,10 @@ function JobCard({ job }) {
             <select 
               className='text-center m-1 pl-2 pr-2 border-2 border-main rounded-xl cursor-pointer'
               id='status' 
-              value={job.status} 
+              value={job.status || ''} 
               onChange={(e) => handleChangeStatus(e)}>
               <option value='applied'> Applied </option>
-              <option value='arranged interview'> Arranged Interview </option>
+              <option value='arrangedInterview'> Arranged Interview </option>
               <option value='interviewed'> Interviwed </option>
               <option value='rejected'> Rejected </option>
               <option value='offer'> Offer </option>

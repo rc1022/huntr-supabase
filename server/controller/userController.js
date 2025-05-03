@@ -26,5 +26,17 @@ exports.register = async ( req, res ) => {
 }
 
 exports.login = async ( req, res ) => {
+    const { email, password } = req.body;
+
+    const [ response ] = pool.query('SELECT password from users WHERE email = ?', [email]);
+    
+    
+
+    try {
+        setError
+    } catch (error) {
+        console.error('Login Error', error);
+        res.status(500).json({message:'Server error'})
+    }
 
 }

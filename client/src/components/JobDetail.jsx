@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import useJobs from '../hooks/useJobs';
 
 
@@ -8,6 +8,8 @@ function JobDetail() {
 
     const [ editingJob, setEditingJob ] = useState(false);
     const [ editedJob, setEditedJob ] = useState({ ...selectedJob });
+
+    const jobLinkRef = useRef(null);
 
     if (!selectedJob) return null;
 
@@ -59,8 +61,9 @@ function JobDetail() {
       }, []);
 
   return (
-    <div className='h-screen w-screen font-poppins fixed bg-black/30 flex justify-center items-center transition-all duration-500 ease-in-out'>
-        <div className='relative bg-ivory h-3/7 w-5/6 md:h-3/5 md:w-1/2 xl:w-1/3 flex flex-col border-4 border-main justify-center items-center animate-fadeZoom'>
+    <div className='z-50 h-screen w-screen font-poppins fixed bg-black/30 flex justify-center items-center transition-all duration-500 ease-in-out'>
+        <div className={`${editingJob ? 'h-4/7 md:h-5/8' : 'h-3/7 md:h-3/5' }
+                        w-5/6 md:w-1/2 xl:w-1/3 relative bg-ivory  flex flex-col border-4 border-main justify-center items-center animate-fadeZoom`}>
             {/* Closing button */}
 
             <button 
@@ -118,6 +121,27 @@ function JobDetail() {
                     : (selectedJob.priority)} 
                 </div>
 
+                { editingJob && selectedJob.job_link && 
+                    (<>
+                        <div className='text-right text-xs md:text-sm'> Job link</div>
+                        <div className='text-center text-xs md:text-sm'>
+                        <input
+                            ref={jobLinkRef}
+                            name="job_link"
+                            value={editedJob.job_link || ''}
+                            onChange={handleChange}
+                            onClick={() => {
+                                if (jobLinkRef.current) {
+                                    jobLinkRef.current.setSelectionRange(0, jobLinkRef.current.value.length);
+                                }
+                            }}
+                            className="w-4/5 md:w-full border p-1 rounded bg-transparent focus:outline-none"
+                        />
+                        </div> 
+                    </>
+
+                    )}
+
                 <div className='text-right text-xs md:text-sm'> Notes </div>
                 <div className='text-center text-xs md:text-sm'> 
                     
@@ -135,13 +159,14 @@ function JobDetail() {
             {/* Buttons */}
             <div className='flex space-x-4 mb-3 md:mt-8'>
             
-                {!editingJob ? (<>
-                <a href={selectedJob?.job_link}
+            {!editingJob ? (<>
+                {selectedJob.job_link && <a href={selectedJob?.job_link}
                     target='_blank'
                     className='px-3 py-2.5 md:px-6 md:py-2 text-xs md:text-sm bg-main text-ivory rounded-md cursor-pointer btn-animate'>
                         Job Page
-                </a>
-
+                </a>}
+                
+                
                 <button 
                     className='px-3.5 py-2.5 md:px-6 md:py-2 text-xs md:text-sm bg-main text-ivory rounded-md cursor-pointer btn-animate'
                     onClick={() => setEditingJob(!editingJob)}> 

@@ -26,6 +26,18 @@ export const UserProvider = ({ children }) => {
             setIsLoading(false);
         }
     }
+    
+    const login = async ( loginData ) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await axios.get(`${API_BASE_URL}/login`, loginData);
+            
+        } catch (err) {
+            
+        }
+    }
 
     return (
         <UserContext.Provider value={{

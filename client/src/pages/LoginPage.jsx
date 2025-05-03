@@ -9,11 +9,21 @@ function LoginPage() {
   const [ showPassword, setShowPassword ] = useState(false);
   const navigate = useNavigate();
 
+  const [ loginData, setLoginData] = useState({
+    email: "",
+    password:"",
+  });
+
+  const handleChange = ( e ) => {
+    const { name, value } = e.target;
+    setLoginData(prev => ({ ...prev, [name]:value}));
+  }
+
 
 
   return (
     <div className='bg-ivory w-screen h-screen flex items-center justify-center'>
-      <div className='w-3/4 h-5/9 xl:w-1/3 md:h-1/2 xl:h-3/5 relative border-4 p-4 md:flex rounded-sm'>
+      <div className='w-3/4 h-5/9 xl:w-1/3 md:h-1/2 lg:h-4/5 xl:h-3/5 relative border-4 p-4 md:flex rounded-sm'>
 
         <div className='w-1/5 hidden items-center justify-center md:flex'>
           <div className='font-sgothic text-8xl transform rotate-90 whitespace-nowrap '  >HUNTR</div>
@@ -27,6 +37,8 @@ function LoginPage() {
             <div className='flex flex-col'>
               <label htmlFor='email' className='text-lg md:text-xl mb-2'> Email: </label>
               <input id="email" name="email" type='text'
+                value={loginData.email}
+                onChange={handleChange}
                 className='border-2 p-2 rounded-lg'/> 
             </div>
 
@@ -34,6 +46,8 @@ function LoginPage() {
             <label htmlFor='password' className='text-lg md:text-xl mb-2'> Password: </label>
             <div className='relative w-full'>
               <input id='password' name='password' type={showPassword ? 'text' : 'password'}
+                  value={loginData.password}
+                  onChange={handleChange}
                   className='border-2 p-2 rounded-lg w-full'/> 
               <button 
                   onClick={() => setShowPassword(!showPassword)}
@@ -45,7 +59,10 @@ function LoginPage() {
          
 
           <div className='flex justify-end'>
-            <button 
+            <button
+              onClick={() => {
+                console.log(loginData)
+                navigate('/jobs')}} 
               className=' text-main border-main border-2 px-2 py-1 mt-1 rounded-md right-1 btn-animate cursor-pointer'>
                 login
             </button>

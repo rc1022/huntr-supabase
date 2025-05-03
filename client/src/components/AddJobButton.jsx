@@ -6,9 +6,9 @@ function AddJobButton() {
   const { handleApplying } = useJobs();
 
   return (
-    <button className='m-1 p-1 rounded-2xl h-10 w-50 md:h-15 md:w-80 md:text-2xl bg-main text-ivory font-poppins cursor-pointer hover:scale-110 ease-in-out duration-500'
+    <button className='m-1 py-2 px-4 rounded-xl text-sm bg-main text-ivory font-poppins cursor-pointer btn-animate'
             onClick={() => handleApplying()}>
-        Add an application
+        add an application
     </button>
   )
 }
