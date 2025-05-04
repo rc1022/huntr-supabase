@@ -29,7 +29,6 @@ export const UserProvider = ({ children }) => {
     }
     
     const login = async ( loginData ) => {
-        setIsLoading(true);
         setError(null);
         try {
             const response = await axios.post(`${API_BASE_URL}/login`, loginData);
@@ -40,14 +39,14 @@ export const UserProvider = ({ children }) => {
         } catch (err) {
             setError('Invalid email or password');
             return false;
-        } finally {
-            setIsLoading(false);
         }
     }
 
     const logout = () => {
         setUser(null);
         setAccessToken(null);
+        localStorage.removeItem('user');
+        localStorage.removeItem('accessToken');  
     }
 
     const refresh = async () => {
@@ -93,7 +92,9 @@ export const UserProvider = ({ children }) => {
         <UserContext.Provider value={{
             user,
             isLoading,
+            setIsLoading,
             error,
+            setError,
             signup,
             accessToken,
             login,

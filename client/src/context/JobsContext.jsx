@@ -137,7 +137,9 @@ export const JobsProvider = ({ children }) => {
         <JobsContext.Provider value={{
             jobs,
             isLoading,
+            setIsLoading,
             error,
+            setError,
             selectedJob,
             applying,
             handleApplying,

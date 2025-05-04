@@ -5,7 +5,7 @@ import { Eye, EyeOff } from 'lucide-react';
 
 function LoginPage() {
 
-  const { login } = useUser();
+  const { login, error, setError, isLoading, setIsLoading } = useUser();
   const [ showPassword, setShowPassword ] = useState(false);
   const navigate = useNavigate();
 
@@ -20,12 +20,17 @@ function LoginPage() {
   }
 
   const handleLogin = async ( data ) => {
-    console.log(data)
+    setIsLoading(true);
     const result = await login(data);
+
     if (result) {
-      navigate('/jobs');
+      setInterval(() => {
+        navigate('/jobs');
+      }, 1500)
     } else {
-      alert('Login failed!')
+      setInterval(() => {
+        setIsLoading(false);
+      }, 1500)
     }
   }
 
@@ -70,11 +75,18 @@ function LoginPage() {
 
           <div className='flex justify-end'>
             <button
+              disabled={isLoading}
               onClick={() => handleLogin(loginData)} 
-              className=' text-main border-main border-2 px-2 py-1 mt-1 rounded-md right-1 btn-animate cursor-pointer'>
-                login
+              className={`${isLoading ? 
+                        "bg-gray-400 text-gray-200 " : 
+                        "text-main border-main border-2"}
+                        " px-2 py-1 mt-1 rounded-md right-1 btn-animate cursor-pointer"
+                        `}>
+                { isLoading ? " loggin in ... " : "login"}
             </button>
           </div>
+          {error && <div className='text-right text-red-400'> {error} </div>}
+
 
           <div className='flex justify-end items-center text-center' >
             <label className='text-main/50'>
