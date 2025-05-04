@@ -2,13 +2,12 @@ const pool = require('../src/db');
 
 exports.getAllJobs = async ( req, res ) => {
     try {
-        const [ rows ] = await pool.query(
-            'SELECT * FROM jobs'
+        const userId = req.user.id;
+        const [ jobs ] = await pool.query(
+            'SELECT * FROM jobs WHERE user_id = ?', [userId]
         )
 
-        res.json(rows);
-
-        console.log(rows);
+        res.json(jobs);
 
     } catch (err) {
         console.error('Erorr fetcing the data', err);
@@ -16,26 +15,10 @@ exports.getAllJobs = async ( req, res ) => {
     }
 }
 
-exports.getJob = async ( req, res ) => {
-    const { id } = req.params;
-
-    try {
-        
-        const [ row ] = await pool.query(
-            'SELECT * FROM jobs WHERE id = ?', [id]
-        )
-        res.json(row);
-
-
-    } catch (err) {
-        console.error('Erorr fetcing the data', err);
-        res.status(500).json({message:'Error fetching the data', err: err.message})
-    }
-}
-
 exports.addJob = async ( req, res ) => {
 
     const newFields = req.body;
+    const userId = req.user.id;
     
     const allowedFields = ['company_name','job_title','application_date','job_link','notes']
     const queryParts = [];
@@ -47,6 +30,9 @@ exports.addJob = async ( req, res ) => {
             queryValues.push(newFields[field]);
         };
     }
+
+    queryParts.push("user_id");
+    queryValues.push(userId);
 
     const placeholders = queryParts.map(() => '?').join(', ');
     const sql = `INSERT INTO jobs (${queryParts.join(', ')}) VALUES (${placeholders})`;
@@ -74,11 +60,11 @@ exports.addJob = async ( req, res ) => {
 exports.updateJob = async ( req, res ) => {
 
     const { id } = req.params;
-
+    const userId = req.user.id;
     const updatedFields = req.body;
 
     const allowedFields = 
-    ['user_id', 'company_name', 'job_title', 'status', 'priority', 'application_date', 'job_link', 'notes']
+    ['company_name', 'job_title', 'status', 'priority', 'application_date', 'job_link', 'notes']
 
     const queryParts = [];
     const queryValues = [];
@@ -96,17 +82,17 @@ exports.updateJob = async ( req, res ) => {
         return res.status(400).json({ message: 'No valid fields provided for update (e.g., task, is_completed).' });
     }
 
+    queryValues.push(id, userId);
+
     const sql = `
         UPDATE jobs 
         SET ${queryParts.join(', ')}
-        WHERE id = ?
+        WHERE id = ? AND user_id = ?
     `
-    queryValues.push(id);
 
     try {
 
         const [ result ] = await pool.query(sql, queryValues);
-        
         if (result.affectedRows === 0) {
             res.status(404).json({message:`Application with ${id} not found.` })
         }
@@ -114,11 +100,6 @@ exports.updateJob = async ( req, res ) => {
         const [ updatedJobRows ] = await pool.query(
             'SELECT * FROM jobs WHERE id = ?', [id]
         )
-
-        if (updatedJobRows.length === 0) {
-            throw new Error(`Failed to retrieve the updated todo with id ${id}.`);
-       }
-
         res.json(updatedJobRows[0])
 
     } catch (err) {
@@ -131,21 +112,22 @@ exports.updateJob = async ( req, res ) => {
 }
 
 exports.deleteJob = async ( req, res ) => {
-    const { id } = req.params;
 
-    if (!id) return res.status(400).json({message:'id is requied.'})
+    const { id } = req.params;
+    const userId = req.user.id;
 
     try {
         
         const [ result ] = await pool.query(
-            'DELETE FROM jobs WHERE id = ?' , [id]
+            'DELETE FROM jobs WHERE id = ? AND user_id = ?' , 
+            [id, userId]
         )
         
         if (result.affectedRows === 0) {
             return res.status(404).json({message:` Application with id:${id} not found.`});
         }
 
-        res.json({ message: `Todo with id ${id} deleted successfully.` });
+        res.json({ message: `Job deleted successfully.` });
 
     } catch (err) {
         console.error(`Error deleting application with id ${id}:`, err);

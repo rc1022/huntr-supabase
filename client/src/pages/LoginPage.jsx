@@ -5,7 +5,7 @@ import { Eye, EyeOff } from 'lucide-react';
 
 function LoginPage() {
 
-  const { user, isLoading, error, signup } = useUser();
+  const { login } = useUser();
   const [ showPassword, setShowPassword ] = useState(false);
   const navigate = useNavigate();
 
@@ -17,6 +17,16 @@ function LoginPage() {
   const handleChange = ( e ) => {
     const { name, value } = e.target;
     setLoginData(prev => ({ ...prev, [name]:value}));
+  }
+
+  const handleLogin = async ( data ) => {
+    console.log(data)
+    const result = await login(data);
+    if (result) {
+      navigate('/jobs');
+    } else {
+      alert('Login failed!')
+    }
   }
 
 
@@ -60,9 +70,7 @@ function LoginPage() {
 
           <div className='flex justify-end'>
             <button
-              onClick={() => {
-                console.log(loginData)
-                navigate('/jobs')}} 
+              onClick={() => handleLogin(loginData)} 
               className=' text-main border-main border-2 px-2 py-1 mt-1 rounded-md right-1 btn-animate cursor-pointer'>
                 login
             </button>

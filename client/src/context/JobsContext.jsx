@@ -1,5 +1,6 @@
 import React, {createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { useUser } from './UserContext';
 
 export const JobsContext = createContext();
 
@@ -14,6 +15,8 @@ export const JobsProvider = ({ children }) => {
     const [ applying, setApplying ] = useState(false);
     const [ selectedJob, setSelectedJob ] = useState(null);
 
+    const { user, accessToken } = useUser();
+
     const handleApplying = () => {
         setApplying(!applying);
       }
@@ -23,12 +26,22 @@ export const JobsProvider = ({ children }) => {
         setEditing(!editing);
       }
 
-    const fetctJobs = async () => {
+    const fetchJobs = async () => {
+
+        if (!accessToken) {
+            setError("Not authenticated.");
+            return;
+        }
+
         setIsLoading(true);
         setError(null);
 
         try {
-            const response = await axios.get(API_BASE_URL);
+            const response = await axios.get(API_BASE_URL, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
             console.log("Fetched jobs:", response.data);
             setJobs(response.data);
             
@@ -41,15 +54,22 @@ export const JobsProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        fetctJobs();
-    }, [])
+        if (accessToken){
+        fetchJobs();
+        }
+    }, [accessToken])
 
     const addJob = async ( job_details ) => {
         setIsLoading(true);
         setError(null);
 
         try {
-            const response = await axios.post(API_BASE_URL, job_details);
+            const response = await axios.post(API_BASE_URL, job_details,
+                {
+                    headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }}
+            );
             const newJob = response.data;
 
             setJobs([...jobs, newJob]);
@@ -57,7 +77,7 @@ export const JobsProvider = ({ children }) => {
             console.log("New Job added:", newJob);
 
         } catch (err) {
-            console.err("Failed to add job:", err);
+            console.error("Failed to add job:", err);
             setError(`Failed to add job: ${err.message}`);
         } finally {
             setIsLoading(false);
@@ -70,8 +90,13 @@ export const JobsProvider = ({ children }) => {
         setError(null);
 
         try {
-            const response = await axios.delete(`${API_BASE_URL}/${id}`)
-
+            const response = await axios.delete(`${API_BASE_URL}/${id}`, 
+                { 
+                    headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }}
+            )
+            
             setJobs(jobs.filter( job => job.id !== id ));
             
         } catch (err) {
@@ -87,7 +112,13 @@ export const JobsProvider = ({ children }) => {
         setError(null);
 
         try {
-            const response = await axios.put(`${API_BASE_URL}/${id}`, updatedFields)
+            const response = await axios.put(`${API_BASE_URL}/${id}`, updatedFields,
+                {
+                    headers:{
+                        Authorization:`Bearer ${accessToken}`
+                    }
+                }
+            )
             const updatedJob = response.data;
 
             setJobs((prevJobs) => 
@@ -112,7 +143,7 @@ export const JobsProvider = ({ children }) => {
             handleApplying,
             editing,
             handleEditing,
-            fetctJobs,
+            fetchJobs,
             addJob,
             deleteJob,
             updateJob,

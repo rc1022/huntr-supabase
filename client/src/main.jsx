@@ -7,13 +7,14 @@ import { UserProvider } from './context/UserContext.jsx'
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <JobsProvider>
-    <UserProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </UserProvider>
-  </JobsProvider>
+  <UserProvider>
+    <JobsProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+    </JobsProvider>
+  </UserProvider>
+
    
 
 )

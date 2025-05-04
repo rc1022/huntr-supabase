@@ -91,7 +91,6 @@ function JobForm() {
                                     await addJob(formData);
                                     handleApplying();
                                     navigate('/jobs');
-                                    console.log(clicked);
                                 }}
                                 disabled={!isValid}
                             >

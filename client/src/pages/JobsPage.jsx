@@ -7,6 +7,7 @@ import JobForm from '../components/JobForm';
 import Spinner from '../components/Spinner';
 import JobDetail from '../components/JobDetail';
 import Charts from '../components/Charts';
+import LogoutButton from '../components/LogoutButton';
 
 function JobsPage() {
 
@@ -27,7 +28,7 @@ function JobsPage() {
       <Header />
       <div className='flex h-screen'>
         {/* Side bar */}
-        <aside className='relative font-sgothic w-100 bg-ivory border-r-6 text-main p-4 hidden lg:block'>
+        <aside className='relative font-sgothic w-100 bg-ivory border-r-6 text-main p-4 hidden lg:block ease-in-out'>
           <div className='border-b-2 pb-2 flex flex-col justify-center items-center text-sm'>
             <div className=' text-3xl mt-4'>SUMMARY</div>
             <div className='w-full h-48 flex justify-center items-center'>
@@ -46,14 +47,19 @@ function JobsPage() {
                   </React.Fragment>
                 ))}
               </div>
-
-              
           </div>
 
           {/* add application button */}
-          <div className='absolute bottom-5 w-full flex justify-center'>
+          <div className='m-3 w-full flex justify-center'>
                 <AddJobButton />
-            </div>
+          </div>
+
+          {/* logout button */}
+          <div className='m-3 w-full flex justify-center'>
+                <LogoutButton />
+          </div>
+
+          
         </aside>
 
         {/* job cards */}
