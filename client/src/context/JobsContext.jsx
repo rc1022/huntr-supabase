@@ -10,10 +10,11 @@ export const JobsProvider = ({ children }) => {
     const [ jobs, setJobs ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(false);
     const [ error, setError ] = useState(null);
-
     const [ editing, setEditing ] = useState(false);
     const [ applying, setApplying ] = useState(false);
     const [ selectedJob, setSelectedJob ] = useState(null);
+    const [ priorityFilter, setPriorityFilter ] = useState('all');
+    const [ prioritySort, setPrioritySort ] = useState('');
 
     const { user, accessToken } = useUser();
 
@@ -26,7 +27,7 @@ export const JobsProvider = ({ children }) => {
         setEditing(!editing);
       }
 
-    const fetchJobs = async () => {
+    const fetchJobs = async ( priority, sort ) => {
 
         if (!accessToken) {
             setError("Not authenticated.");
@@ -36,8 +37,13 @@ export const JobsProvider = ({ children }) => {
         setIsLoading(true);
         setError(null);
 
+        let query = [];
+        if (priority) query.push(`priority=${priority}`);
+        if (sort) query.push(`sort=${sort}`);
+        const queryString = query.length > 0 ? `${query.join('&')}` : '';
+
         try {
-            const response = await axios.get(API_BASE_URL, {
+            const response = await axios.get(`${API_BASE_URL}?${queryString}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -55,9 +61,9 @@ export const JobsProvider = ({ children }) => {
 
     useEffect(() => {
         if (accessToken){
-        fetchJobs();
+        fetchJobs(priorityFilter, prioritySort);
         }
-    }, [accessToken])
+    }, [accessToken, priorityFilter, prioritySort])
 
     const addJob = async ( job_details ) => {
         setIsLoading(true);
@@ -149,6 +155,10 @@ export const JobsProvider = ({ children }) => {
             addJob,
             deleteJob,
             updateJob,
+            priorityFilter,
+            setPriorityFilter,
+            prioritySort,
+            setPrioritySort,
         }}>
             {children}
         </JobsContext.Provider>

@@ -1,12 +1,26 @@
 const pool = require('../src/db');
 
 exports.getAllJobs = async ( req, res ) => {
-    try {
-        const userId = req.user.id;
-        const [ jobs ] = await pool.query(
-            'SELECT * FROM jobs WHERE user_id = ?', [userId]
-        )
+    const { priority, sort } = req.query;
+    const userId = req.user.id;
 
+    let sql = 'SELECT * FROM jobs WHERE user_id = ?';
+    let params = [userId]
+
+    if (priority && priority !== 'all') {
+        sql += ' AND priority = ?';
+        params.push(priority);
+    }
+
+    if (sort === 'priority_asc') {
+        sql += ' ORDER BY FIELD(priority, "low", "medium", "high") ASC';
+    } else if (sort === 'priority_desc') {
+        sql += ' ORDER BY FIELD(priority, "low", "medium", "high") DESC';
+    }
+
+
+    try {
+        const [ jobs ] = await pool.query( sql, params)
         res.json(jobs);
 
     } catch (err) {

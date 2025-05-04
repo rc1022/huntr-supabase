@@ -8,6 +8,8 @@ import Spinner from '../components/Spinner';
 import JobDetail from '../components/JobDetail';
 import Charts from '../components/Charts';
 import LogoutButton from '../components/LogoutButton';
+import SortingOptions from '../components/SortingOptions';
+import FilterOptions from '../components/FilterOptions';
 
 function JobsPage() {
 
@@ -64,6 +66,10 @@ function JobsPage() {
 
         {/* job cards */}
         <main className='flex-1 p-6'>
+        <div className='flex flex-row justify-center'>
+          <FilterOptions />
+          <SortingOptions />
+        </div>
           <div className='flex flex-col h-full justify-center items-center mt-2 mb-2 ml-10 mr-10 bg-ivory'>
             <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 m-1 overflow-y-auto justify-items-center'>
               

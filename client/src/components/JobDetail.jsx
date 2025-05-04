@@ -27,7 +27,7 @@ function JobDetail() {
       
         await updateJob(selectedJob.id, cleanedJob);
         setEditingJob(false);
-        Object.assign(selectedJob, cleanedJob); // merge only non-empty fields
+        Object.assign(selectedJob, cleanedJob);
         console.log(cleanedJob);
       };
 
@@ -94,13 +94,13 @@ function JobDetail() {
                         className="w-4/5 md:w-full border p-1 rounded text-center bg-ivory focus:outline-none">
                             
                             <option value="applied">Applied</option>
-                            <option value="arranged interview">Arranged Interview</option>
+                            <option value="arrangedInterview">Arranged Interview</option>
                             <option value="interview">Interviewed</option>
                             <option value="rejected">Rejected</option>
                             <option value="offer">Offer</option>
-                        </select>) 
-                    
-                    : (selectedJob.status)}
+                        </select>) :
+                    selectedJob.status === "arrangedInterview" ?  ("Arranged Interview") :
+                    (selectedJob.status.charAt(0).toUpperCase() + selectedJob.status.slice(1))}
                 </div>
 
                 <div className='text-right'> Priority </div>
@@ -118,7 +118,7 @@ function JobDetail() {
                             <option value="low">Low</option>
 
                         </select>)
-                    : (selectedJob.priority)} 
+                    :  (selectedJob.priority.charAt(0).toUpperCase() + selectedJob.priority.slice(1) ) }
                 </div>
 
                 { editingJob && selectedJob.job_link && 
