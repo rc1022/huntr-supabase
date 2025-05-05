@@ -81,10 +81,12 @@ export const JobsProvider = ({ children }) => {
             setJobs([...jobs, newJob]);
             setError(null);
             console.log("New Job added:", newJob);
+            return true;
 
         } catch (err) {
             console.error("Failed to add job:", err);
             setError(`Failed to add job: ${err.message}`);
+            return false;
         } finally {
             setIsLoading(false);
         }

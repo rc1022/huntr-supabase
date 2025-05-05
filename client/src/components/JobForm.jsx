@@ -5,7 +5,6 @@ import useJobs from '../hooks/useJobs';
 function JobForm() {
 
     const modalRef = useRef();
-    const navigate = useNavigate();
     const { addJob, handleApplying } = useJobs();
 
     const [ formData, setFormData ] = useState({
@@ -37,10 +36,6 @@ function JobForm() {
       }, []);
 
     const isValid = formData.company_name && formData.job_title && formData.application_date
-
-
-
-   
 
   return (
     <div className='z-50 h-screen w-screen fixed bg-black/30 flex justify-center items-center transition-all duration-500 ease-in-out'>
@@ -88,9 +83,9 @@ function JobForm() {
                 <div className='mb-4 flex flex-row justify-center items-center font-sgothic'>
                     <button className={`grow pl-2 pr-2 rounded-xl h-10 w-20 text-ivory text-lg m-1 cursor-pointer ${isValid ? 'bg-main' : 'bg-main opacity-50 cursor-not-allowed'}`}
                                 onClick={ async () => {
-                                    await addJob(formData);
-                                    handleApplying();
-                                    navigate('/jobs');
+                                    const success = await addJob(formData);
+                                    if (success) {handleApplying()}
+                                    else { alert("Failed to add application!")};
                                 }}
                                 disabled={!isValid}
                             >
