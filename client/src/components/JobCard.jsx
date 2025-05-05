@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import useJobs from '../hooks/useJobs'
 import { ChevronsDown, Heart } from 'lucide-react'
 
@@ -10,16 +10,6 @@ function JobCard({ job }) {
     const newStatus = e.target.value;
     updateJob(job.id, {status: newStatus});
   }
-
-  const priorityClass = ( priority )  => {
-    switch ( priority ) {
-      case "high" : return "priority-high";
-      case "medium" : return "priority-medium";
-      case "low" : return "priority-low";
-      default: return "";
-    }
-  }
-
 
   return (
    <div key={job.id} 

@@ -1,153 +1,92 @@
-const pool = require('../src/db');
+const supabase = require('../src/supabaseClient');
 
-exports.getAllJobs = async ( req, res ) => {
+exports.getAllJobs = async (req, res) => {
     const { priority, sort } = req.query;
     const userId = req.user.id;
 
-    let sql = 'SELECT * FROM jobs WHERE user_id = ?';
-    let params = [userId]
-
+    let query = supabase.from('jobs').select('*').eq('user_id', userId);
     if (priority && priority !== 'all') {
-        sql += ' AND priority = ?';
-        params.push(priority);
+        query = query.eq('priority', priority);
     }
-
     if (sort === 'priority_asc') {
-        sql += ' ORDER BY FIELD(priority, "low", "medium", "high") ASC';
+        query = query.order('priority', { ascending: true });
     } else if (sort === 'priority_desc') {
-        sql += ' ORDER BY FIELD(priority, "low", "medium", "high") DESC';
+        query = query.order('priority', { ascending: false });
     }
 
-
-    try {
-        const [ jobs ] = await pool.query( sql, params)
-        res.json(jobs);
-
-    } catch (err) {
-        console.error('Erorr fetcing the data', err);
-        res.status(500).json({message:'Error fetching the data', err: err.message});
+    const { data, error } = await query;
+    if (error) {
+        console.error('Error fetching the data', error);
+        return res.status(500).json({ message: 'Error fetching the data', error: error.message });
     }
-}
+    res.json(data);
+};
 
-exports.addJob = async ( req, res ) => {
-
+exports.addJob = async (req, res) => {
     const newFields = req.body;
     const userId = req.user.id;
-    
-    const allowedFields = ['company_name','job_title','application_date','job_link','notes']
-    const queryParts = [];
-    const queryValues = [];
-
-    for (const field in newFields) {
-        if (allowedFields.includes(field)) {
-            queryParts.push(field);
-            queryValues.push(newFields[field]);
-        };
-    }
-
-    queryParts.push("user_id");
-    queryValues.push(userId);
-
-    const placeholders = queryParts.map(() => '?').join(', ');
-    const sql = `INSERT INTO jobs (${queryParts.join(', ')}) VALUES (${placeholders})`;
-
-    try {
-        const [ result ] = await pool.query(sql, queryValues);
-
-        if (result.affectedRows === 0) {
-            return res.status(400).json({message: 'Failed to add the job application.'})
+    const allowedFields = ['company_name', 'job_title', 'application_date', 'job_link', 'notes'];
+    const insertData = { user_id: userId };
+    for (const field of allowedFields) {
+        if (newFields[field] !== undefined) {
+            insertData[field] = newFields[field];
         }
-        
-        const newJobId = result.insertId;
-        const [ newJobRows ] = await pool.query(
-            'SELECT * FROM jobs WHERE id = ?',[newJobId]
-        );
-        res.status(201).json(newJobRows[0]);
-
-    } catch (err) {
-        console.error('Erorr adding the data', err);
-        res.status(500).json({message:'Error adding the data', err: err.message})
-        
     }
-}
+    const { data, error } = await supabase.from('jobs').insert([insertData]).select('*');
+    if (error) {
+        console.error('Error adding the data', error);
+        return res.status(500).json({ message: 'Error adding the data', error: error.message });
+    }
+    res.status(201).json(data && data[0] ? data[0] : data);
+};
 
-exports.updateJob = async ( req, res ) => {
-
+exports.updateJob = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
     const updatedFields = req.body;
-
-    const allowedFields = 
-    ['company_name', 'job_title', 'status', 'priority', 'application_date', 'job_link', 'notes']
-
-    const queryParts = [];
-    const queryValues = [];
-
-    for ( const field in updatedFields) {
-        if (allowedFields.includes(field)) {
-            queryParts.push(`${field} = ?`);
-            queryValues.push(updatedFields[field]);
-        } else {
-            console.warn(`Ignoring unknown field in update request body: ${field}`);
+    const allowedFields = ['company_name', 'job_title', 'status', 'priority', 'application_date', 'job_link', 'notes'];
+    const updateData = {};
+    for (const field of allowedFields) {
+        if (updatedFields[field] !== undefined) {
+            updateData[field] = updatedFields[field];
         }
     }
-
-    if (queryParts.length === 0) {
-        return res.status(400).json({ message: 'No valid fields provided for update (e.g., task, is_completed).' });
+    if (Object.keys(updateData).length === 0) {
+        return res.status(400).json({ message: 'No valid fields provided for update.' });
     }
-
-    queryValues.push(id, userId);
-
-    const sql = `
-        UPDATE jobs 
-        SET ${queryParts.join(', ')}
-        WHERE id = ? AND user_id = ?
-    `
-
-    try {
-
-        const [ result ] = await pool.query(sql, queryValues);
-        if (result.affectedRows === 0) {
-            res.status(404).json({message:`Application with ${id} not found.` })
-        }
-
-        const [ updatedJobRows ] = await pool.query(
-            'SELECT * FROM jobs WHERE id = ?', [id]
-        )
-        res.json(updatedJobRows[0])
-
-    } catch (err) {
-        console.error(`Error updating application with id ${id}:`, err);
-        res.status(500).json({
-            message: `Error updating applciation with id ${id}`,
-            error: err.message
+    const { data, error } = await supabase
+        .from('jobs')
+        .update(updateData)
+        .eq('id', id)
+        .eq('user_id', userId)
+        .select('*');
+    if (error) {
+        console.error(`Error updating application with id ${id}:`, error);
+        return res.status(500).json({
+            message: `Error updating application with id ${id}`,
+            error: error.message
         });
     }
-}
+    if (!data || data.length === 0) {
+        return res.status(404).json({ message: `Application with id ${id} not found.` });
+    }
+    res.json(data[0]);
+};
 
-exports.deleteJob = async ( req, res ) => {
-
+exports.deleteJob = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
-
-    try {
-        
-        const [ result ] = await pool.query(
-            'DELETE FROM jobs WHERE id = ? AND user_id = ?' , 
-            [id, userId]
-        )
-        
-        if (result.affectedRows === 0) {
-            return res.status(404).json({message:` Application with id:${id} not found.`});
-        }
-
-        res.json({ message: `Job deleted successfully.` });
-
-    } catch (err) {
-        console.error(`Error deleting application with id ${id}:`, err);
-        res.status(500).json({
-            message: `Error deleting applciation with id ${id}`,
-            error: err.message
+    const { error } = await supabase
+        .from('jobs')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', userId);
+    if (error) {
+        console.error(`Error deleting application with id ${id}:`, error);
+        return res.status(500).json({
+            message: `Error deleting application with id ${id}`,
+            error: error.message
         });
     }
-}
+    res.json({ message: `Job deleted successfully.` });
+};

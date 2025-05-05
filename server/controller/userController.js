@@ -1,4 +1,4 @@
-const pool = require('../src/db');
+const supabase = require('../src/supabaseClient');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 
@@ -22,18 +22,35 @@ exports.register = async ( req, res ) => {
     const { email, password } = req.body;
 
     try {
-        const [ exisitingUser ] = await pool.query(
-            'SELECT * FROM users WHERE email = ?', [email]
-        )
+        const { data: existingUser, error: existError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', email);
 
-        if (exisitingUser > 0) {
-            return res.status(400).json({message: 'Email already exists'});
+        if (existError) {
+            return res.status(500).json({ message: 'Error checking user', error: existError.message });
+        }
+        if (existingUser && existingUser.length > 0) {
+            return res.status(400).json({ message: 'Email already exists' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        await pool.query('INSERT INTO users (email, password) VALUES (?, ?)'
-            , [ email, hashedPassword]);
-        res.status(201).json({message: 'User created successfully!'})
+        const { data, error: insertError } = await supabase
+            .from('users')
+            .insert([{ email, password_hash: hashedPassword }])
+            .select();
+
+        if (insertError) {
+            return res.status(500).json({ message: 'Error creating user', error: insertError.message });
+        }
+        const newUser = data && data[0];
+        if (!newUser) {
+            return res.status(500).json({ message: 'Failed to retrieve new user after insert.' });
+        }
+        res.status(201).json({
+            message: 'User created successfully!',
+            user: { id: newUser.id, email: newUser.email }
+        });
 
     } catch (error) {
         console.error('Signup error:',error)
@@ -45,50 +62,55 @@ exports.login = async ( req, res ) => {
     try {
         const { email, password } = req.body;
 
-        const [ users ] = await pool.query('SELECT * from users WHERE email = ?', [email]);
-            if (users.length === 0) {
-                return res.status(401).json({message: 'Invalid credentials'});
-            }
+        const { data: users, error: userError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', email);
+        
+        if (userError) {
+            return res.status(500).json({ message: 'Error fetching user', error: userError.message });
+        }
+
+        if (!users || users.length === 0) {
+            console.log('No user found for email: ', email)
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
 
         const user = users[0];
-        const valid = await bcrypt.compare(password, user.password);
+        console.log('Comparing password:', password, 'with hash:', user.password_hash);
+        const valid = await bcrypt.compare(password, user.password_hash);
         if (!valid) {
             return res.status(401).json({message: 'Invalid credentials'});
         }
 
         const accessToken = jwt.sign(
-            { id: user.id, email: user.email},
+            { id: user.id, email: user.email },
             ACCESS_TOKEN_SECRET,
-            { expiresIn: '15m'}
+            { expiresIn: '15m' }
         );
 
         const refreshToken = jwt.sign(
-            {id: user.id, email: user.email},
+            { id: user.id, email: user.email },
             REFRESH_TOKEN_SECRET,
-            {expiresIn:'15d'}
+            { expiresIn: '15d' }
         );
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 15*24*60*60*1000
-        })
+            maxAge: 15 * 24 * 60 * 60 * 1000
+        });
 
         res.json({
             accessToken,
-            user: { id: user.id, email: user.email}
-        })
+            user: { id: user.id, email: user.email }
+        });
 
-
-    
-
-    
     } catch (error) {
         console.error('Login Error', error);
         res.status(500).json({message:'Server error'})
     }
-
 }
 
 exports.refresh = async (req, res) => {
