@@ -3,7 +3,7 @@ import { LoaderCircle } from 'lucide-react'
 
 function Spinner() {
   return (
-    <div className='z-0 fixed top-0 left-0 h-full w-full bg-main/40 flex justify-center items-center'>
+    <div className='z-50 fixed top-0 left-0 h-full w-full bg-main/40 flex justify-center items-center'>
         <LoaderCircle size={48} strokeWidth={2} className='animate-spin text-main'/>
     </div>
   )

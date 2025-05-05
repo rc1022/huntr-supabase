@@ -1,35 +1,27 @@
 # Huntr - Job Tracker App
 
-A simple and stylish Job Tracker web application built with **React** and **Tailwind CSS**.  
-It helps users organize and manage their job applications more efficiently.
-
----
+A modern job application tracker with a React frontend and a Node.js/Express backend powered by Supabase (Postgres).
 
 ## Features
 
-- Add new job applications
-- Edit and update existing applications
-- Delete applications
-- View job details in a modal
-- Smooth animations and hover effects
-- Responsive design for desktop and mobile
-- Built with clean, modern UI using Tailwind CSS
-
----
+- Secure JWT-based authentication
+- Add, update and delete job applications
+- Filter and sorting applications
+- Responsive UI with Tailwind CSS
+- Animated transitions (Framer Motion)
+- Row Level Security (RLS) for user data isolation
 
 ## Tech Stack
 
-- **Frontend:** React, Tailwind CSS
+- **Frontend:** React 19, Tailwind CSS, Framer Motion, Axios
 - **State Management:** React Context API
-- **Backend:** MySQL
+- **Backend:** Node.js, Express
+- **Database & Auth:** Supabase (Postgres), custom JWTs
 - **HTTP Client:** Axios
 
---
+## Contributing
+PRs welcome! Please open issues for feature requests or bugs.
 
-## Future
-
-- Deploy using Vercel / Netilify
-- Add filtering / search features
-- Add authentication (login / signup)
-
+## License
+MIT
 

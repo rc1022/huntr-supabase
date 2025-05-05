@@ -2,8 +2,8 @@ const supabase = require('../src/supabaseClient');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 
-const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'access-secret';
-const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'refresh-secret';
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'fallback-access-secret';
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'fallback-refresh-secret';
 
 exports.authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];

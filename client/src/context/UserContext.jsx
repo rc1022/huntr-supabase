@@ -1,9 +1,9 @@
 import React, {createContext ,useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+const UserContext = createContext();
 
-  const UserContext = createContext();
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-const API_BASE_URL = '/api/huntr';
 
 export const UserProvider = ({ children }) => {
 
@@ -12,18 +12,12 @@ export const UserProvider = ({ children }) => {
     const [ error, setError ] = useState(null);
     const [ accessToken, setAccessToken ] = useState(null);
 
-    // test log
-    useEffect(() => {
-        console.log('User state changed:', user)
-    }, [user])
-
-
     const signup = async ( formData ) => {
         setIsLoading(true);
         setError(null);
 
         try {
-            const response = await axios.post(`${API_BASE_URL}/signup`, formData);
+            const response = await axios.post(`${API_BASE_URL}/api/huntr/signup`, formData);
             console.log("New user added", response.data);
             setUser(response.data.user);
 
@@ -37,7 +31,7 @@ export const UserProvider = ({ children }) => {
     const login = async ( loginData ) => {
         setError(null);
         try {
-            const response = await axios.post(`${API_BASE_URL}/login`, loginData);
+            const response = await axios.post(`${API_BASE_URL}/api/huntr/login`, loginData);
             setUser(response.data.user);
             setAccessToken(response.data.accessToken);
             return true;
@@ -57,7 +51,7 @@ export const UserProvider = ({ children }) => {
 
     const refresh = async () => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/refresh`,{},
+            const response = await axios.post(`${API_BASE_URL}/api/huntr/refresh`,{},
                 {
                     withCredentials: true
                 });

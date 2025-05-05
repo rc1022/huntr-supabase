@@ -3,7 +3,7 @@ require('dotenv').config({path:'../.env'});
 
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = process.env.VITE_SUPABASE_ANONKEY
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANONKEY;
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 

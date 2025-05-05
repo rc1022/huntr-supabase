@@ -4,7 +4,7 @@ import { useUser } from './UserContext';
 
 export const JobsContext = createContext();
 
-const API_BASE_URL = '/api/huntr';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const JobsProvider = ({ children }) => {
     const [ jobs, setJobs ] = useState([]);
@@ -43,7 +43,7 @@ export const JobsProvider = ({ children }) => {
         const queryString = query.length > 0 ? `${query.join('&')}` : '';
 
         try {
-            const response = await axios.get(`${API_BASE_URL}?${queryString}`, {
+            const response = await axios.get(`${API_BASE_URL}/api/huntr/?${queryString}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -70,7 +70,7 @@ export const JobsProvider = ({ children }) => {
         setError(null);
 
         try {
-            const response = await axios.post(API_BASE_URL, job_details,
+            const response = await axios.post(`${API_BASE_URL}/api/huntr/`, job_details,
                 {
                     headers: {
                     Authorization: `Bearer ${accessToken}`
@@ -98,11 +98,12 @@ export const JobsProvider = ({ children }) => {
         setError(null);
 
         try {
-            const response = await axios.delete(`${API_BASE_URL}/${id}`, 
-                { 
+            const response = await axios.delete(`${API_BASE_URL}/api/huntr/${id}`,
+                {
                     headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }}
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                }
             )
             
             setJobs(jobs.filter( job => job.id !== id ));
@@ -120,7 +121,7 @@ export const JobsProvider = ({ children }) => {
         setError(null);
 
         try {
-            const response = await axios.put(`${API_BASE_URL}/${id}`, updatedFields,
+            const response = await axios.put(`${API_BASE_URL}/api/huntr/${id}`, updatedFields,
                 {
                     headers:{
                         Authorization:`Bearer ${accessToken}`
