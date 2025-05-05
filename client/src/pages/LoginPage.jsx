@@ -19,19 +19,20 @@ function LoginPage() {
     setLoginData(prev => ({ ...prev, [name]:value}));
   }
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleLogin(loginData);
+  }
+
   const handleLogin = async ( data ) => {
     setIsLoading(true);
     const result = await login(data);
-
     if (result) {
-      setInterval(() => {
-        navigate('/jobs');
-      }, 1500)
+      navigate('/jobs');
     } else {
-      setInterval(() => {
-        setIsLoading(false);
-      }, 1500)
+      setIsLoading(false);
     }
+    setIsLoading(false);
   }
 
 
@@ -49,6 +50,7 @@ function LoginPage() {
 
           <div className='grow flex flex-col justify-center gap-2 md:gap-5 px-4 md:px-8 font-poppins '>
             <div className='text-2xl md:text-3xl font-sgothic'>Login</div>
+            <form onSubmit={handleSubmit}>
             <div className='flex flex-col'>
               <label htmlFor='email' className='text-lg md:text-xl mb-2'> Email: </label>
               <input id="email" name="email" type='text'
@@ -75,8 +77,8 @@ function LoginPage() {
 
           <div className='flex justify-end'>
             <button
+              type="submit"
               disabled={isLoading}
-              onClick={() => handleLogin(loginData)} 
               className={`${isLoading ? 
                         "bg-gray-400 text-gray-200 " : 
                         "text-main border-main border-2"}
@@ -93,6 +95,7 @@ function LoginPage() {
                 New to huntr?
             </label>
             <button 
+              type="button"
               onClick={() => navigate('/signup')}
               className='underline text-main px-2 py-1 rounded-md right-1 btn-animate cursor-pointer'>
                 Create an account
@@ -100,10 +103,8 @@ function LoginPage() {
           </div>
           
           
-
+          </form>
           </div>
-
-
       </div>
     </div>
   )

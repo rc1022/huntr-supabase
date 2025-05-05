@@ -12,6 +12,12 @@ export const UserProvider = ({ children }) => {
     const [ error, setError ] = useState(null);
     const [ accessToken, setAccessToken ] = useState(null);
 
+    // test log
+    useEffect(() => {
+        console.log('User state changed:', user)
+    }, [user])
+
+
     const signup = async ( formData ) => {
         setIsLoading(true);
         setError(null);
