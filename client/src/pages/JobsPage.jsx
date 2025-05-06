@@ -3,7 +3,7 @@ import { AnimatePresence, motion }from 'framer-motion'
 import useJobs from '../hooks/useJobs';
 import Header from '../components/Header';
 import JobCard from '../components/JobCard';
-import AddJobButton from '../components/addJobButton';
+import AddJobButton from '../components/AddJobButton';
 import JobForm from '../components/JobForm';
 import Spinner from '../components/Spinner';
 import JobDetail from '../components/JobDetail';
