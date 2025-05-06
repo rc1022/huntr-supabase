@@ -18,7 +18,7 @@ export const UserProvider = ({ children }) => {
 
         try {
             const response = await axios.post(`${API_BASE_URL}/api/huntr/signup`, formData);
-            console.log("New user added", response.data);
+
             setUser(response.data.user);
 
         } catch (err) {

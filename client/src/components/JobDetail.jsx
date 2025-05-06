@@ -28,7 +28,7 @@ function JobDetail() {
         await updateJob(selectedJob.id, cleanedJob);
         setEditingJob(false);
         Object.assign(selectedJob, cleanedJob);
-        console.log(cleanedJob);
+
       };
 
     const handleCancel = () => {

@@ -48,7 +48,7 @@ export const JobsProvider = ({ children }) => {
                     Authorization: `Bearer ${accessToken}`,
                 },
             });
-            console.log("Fetched jobs:", response.data);
+
             setJobs(response.data);
             
         } catch (err) {
@@ -80,7 +80,7 @@ export const JobsProvider = ({ children }) => {
 
             setJobs([...jobs, newJob]);
             setError(null);
-            console.log("New Job added:", newJob);
+
             return true;
 
         } catch (err) {
