@@ -37,7 +37,7 @@ function LoginPage() {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      handleLogin(data);
+      handleLogin(loginData);
     }
   }
 
