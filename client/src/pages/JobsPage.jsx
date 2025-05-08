@@ -16,6 +16,7 @@ function JobsPage() {
 
   const [ showSort, setShowSort ] = useState(false); 
   const [ showFilter, setShowFilter ] = useState(false);
+  const [ showMobileDashboard, setShowMobileDashboard ] = useState(false);
 
   // Filter jobs based on status and priority
   const filteredJobs = jobs.filter(job =>
@@ -29,14 +30,15 @@ function JobsPage() {
       {isLoading && <Spinner />}
       {applying && <JobForm /> }
       {editing && <JobDetail />}
-      <Header />
+      <Header onToggleMobileDashboard={() => setShowMobileDashboard(!showMobileDashboard)} />
       <div className='relative flex min-h-screen'>
       <SideBar showFilter={showFilter}/>
+      
 
         {/* job side */}
         <main className='relative flex-1 p-6'>
         
-        <div className='max-w-full absolute left-5 top-5 space-y-5'>
+        <div className='max-w-full absolute left-5 top-5 space-y-5 hidden md:block'>
           <ArrowDownUp strokeWidth={2}
             className='option-animate'
             onClick={() => setShowSort(!showSort)}/>
@@ -64,7 +66,7 @@ function JobsPage() {
 
         {/* cards */}
           <div className='flex flex-col h-full justify-center items-center mt-2 mb-2 ml-10 mr-10 bg-ivory'>
-            <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 m-1 overflow-y-auto justify-items-center'>
+            <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 m-1 overflow-y-auto justify-items-center'>
               
               <AnimatePresence>
               { 
