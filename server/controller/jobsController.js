@@ -1,12 +1,16 @@
 const supabase = require('../src/supabaseClient');
 
 exports.getAllJobs = async (req, res) => {
-    const { priority, sort } = req.query;
+    const { priority, sort, status } = req.query;
     const userId = req.user.id;
 
     let query = supabase.from('jobs').select('*').eq('user_id', userId);
     if (priority && priority !== 'all') {
         query = query.eq('priority', priority);
+    }
+
+    if (status && status !== 'all'){
+        query.eq('status', status)
     }
     if (sort === 'priority_asc') {
         query = query.order('priority', { ascending: true });

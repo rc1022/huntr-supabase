@@ -14,6 +14,7 @@ export const JobsProvider = ({ children }) => {
     const [ applying, setApplying ] = useState(false);
     const [ selectedJob, setSelectedJob ] = useState(null);
     const [ priorityFilter, setPriorityFilter ] = useState('all');
+    const [ statusFilter, setStatusFilter ] = useState('all');
     const [ prioritySort, setPrioritySort ] = useState('');
 
     const { user, accessToken } = useUser();
@@ -27,7 +28,7 @@ export const JobsProvider = ({ children }) => {
         setEditing(!editing);
       }
 
-    const fetchJobs = async ( priority, sort ) => {
+    const fetchJobs = async ( priority, sort, status ) => {
 
         if (!accessToken) {
             setError("Not authenticated.");
@@ -40,6 +41,7 @@ export const JobsProvider = ({ children }) => {
         let query = [];
         if (priority) query.push(`priority=${priority}`);
         if (sort) query.push(`sort=${sort}`);
+        if (status) query.push(`status=${status}`);
         const queryString = query.length > 0 ? `${query.join('&')}` : '';
 
         try {
@@ -63,7 +65,7 @@ export const JobsProvider = ({ children }) => {
         if (accessToken){
         fetchJobs(priorityFilter, prioritySort);
         }
-    }, [accessToken, priorityFilter, prioritySort])
+    }, [accessToken, priorityFilter, prioritySort, statusFilter])
 
     const addJob = async ( job_details ) => {
         setIsLoading(true);
@@ -162,6 +164,8 @@ export const JobsProvider = ({ children }) => {
             setPriorityFilter,
             prioritySort,
             setPrioritySort,
+            statusFilter,
+            setStatusFilter
         }}>
             {children}
         </JobsContext.Provider>

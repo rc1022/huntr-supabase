@@ -13,19 +13,19 @@ function SortingOptions() {
   }
 
   return (
-    <div className="font-sgothic pl-10">
-      <span className="border-b-2 mb-10">sort by</span>
+    <div className="w-full flex flex-col justify-center items-center font-sgothic md:pl-10 space-y-3">
+      <span className="border-b-2">sort by</span>
 
-      <div className="mt-2 flex flex-col text-sm space-y-5">
-        <button name="priority_asc"
+      <div className="mt-2 flex flex-row text-sm space-x-5">
+        <button name="priority_desc"
           onClick={(e) => handleClick(e)}
-          className={`${prioritySort === "priority_asc" ? "border-main" : "border-ivory" } border-2`}>
+          className={`${prioritySort === "priority_desc" ? "border-main" : "border-ivory" } border-2 option-animate`}>
         Low → High
         </button>
 
-        <button name="priority_desc"
+        <button name="priority_asc"
           onClick={(e) => handleClick(e)}
-          className={`${prioritySort === "priority_desc" ? "border-main" : "border-ivory" } border-2`}>
+          className={`${prioritySort === "priority_asc" ? "border-main" : "border-ivory" } border-2 option-animate`}>
         High → Low
         </button>
 
