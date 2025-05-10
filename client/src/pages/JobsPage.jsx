@@ -36,7 +36,9 @@ function JobsPage() {
       <SideBar showFilter={showFilter}/>
 
       {/* mobile dashboard */}
-      {showMobileDashboard && <MobilDashBoard />}
+      {showMobileDashboard && 
+        <MobilDashBoard showFilter={showFilter}
+          onToggleMobileDashboard={() => setShowMobileDashboard(!showMobileDashboard)} />}
       
 
         {/* job side */}
