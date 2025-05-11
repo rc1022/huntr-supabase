@@ -7,6 +7,7 @@ import Charts from '../components/Charts';
 import FilterOptions from '../components/FilterOptions';
 import { ArrowBigLeftDash } from 'lucide-react'
 import JobForm from './JobForm';
+import Header from './Header';
 
 
 
@@ -19,19 +20,11 @@ function MobilDashBoard({ showFilter, onToggleMobileDashboard }) {
   }, {});
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full z-50 bg-ivory flex flex-col font-sgothic p-4 md:hidden overflow-y-auto border-r-6 text-main">
-      <button
-        className="absolute left-4 top-4 p-2 flex items-center justify-center btn-animate"
-        aria-label="Close dashboard"
-        onClick={onToggleMobileDashboard}
-        style={{ zIndex: 60 }}
-      >
-        <ArrowBigLeftDash size={28} />
-      </button>
+    <div className="w-full h-full z-0 bg-ivory flex flex-col font-sgothic p-4 md:hidden overflow-y-auto text-main">
 
       {applying && <JobForm /> }
       
-      <div className="pt-12"> {/* Add top padding to avoid overlap with close button */}
+      <div className="">
         <AnimatePresence mode="wait">
         {showFilter ? (
           <motion.div
@@ -53,7 +46,7 @@ function MobilDashBoard({ showFilter, onToggleMobileDashboard }) {
             className="flex flex-col h-full"
           >
             <div className='pb-2 flex flex-col justify-center items-center text-sm flex-1'>
-              <div className='text-2xl mt-2 mb-2'>SUMMARY</div>
+              <div className='text-4xl mt-2 mb-5'>SUMMARY</div>
               <div className='w-full h-40 flex justify-center items-center'>
                 <Charts jobStatus={jobStatus} />
               </div>

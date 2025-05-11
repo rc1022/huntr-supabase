@@ -70,7 +70,7 @@ function JobForm() {
 
           <div className='flex flex-col gap-1'>
             <label htmlFor="application_date" className="text-main font-semibold">Apply Date</label>
-            <input id="application_date" type="date" required value={formData.application_date} onChange={handleChange} className="border-main border-2 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-main" />
+            <input id="application_date" type="date" required value={formData.application_date} onChange={handleChange} className="border-main border-2 p-3 rounded-lg w-full block appearance-none focus:outline-none focus:ring-2 focus:ring-main" />
           </div>
           <div className='flex flex-col gap-1'>
             <label htmlFor="job_link" className="text-main font-semibold">JD URL (optional)</label>

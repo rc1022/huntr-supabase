@@ -35,13 +35,19 @@ function JobsPage() {
       <div className='relative flex min-h-screen'>
       <SideBar showFilter={showFilter}/>
 
-      {/* mobile dashboard */}
-      {showMobileDashboard && 
-        <MobilDashBoard showFilter={showFilter}
-          onToggleMobileDashboard={() => setShowMobileDashboard(!showMobileDashboard)} />}
-      
-
         {/* job side */}
+
+
+        {showMobileDashboard ?
+
+        ( 
+        // mobile dashboard
+        <MobilDashBoard showFilter={showFilter}
+          onToggleMobileDashboard={() => setShowMobileDashboard(!showMobileDashboard)} />)
+        
+        : (
+        
+        // job cards
         <main className='relative flex-1 p-6'>
         
         <div className='max-w-full absolute left-5 top-5 space-y-5 hidden md:block'>
@@ -100,6 +106,8 @@ function JobsPage() {
           )}
         </AnimatePresence>
         </main>
+        )}
+
       </div>
   </>
   )
